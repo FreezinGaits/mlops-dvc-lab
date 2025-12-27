@@ -1,0 +1,265 @@
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> uv add dvc
+Resolved 104 packages in 4ms
+Audited 103 packages in 34ms
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc init
+Initialized DVC repository.
+
+You can now commit the changes to git.
+
++---------------------------------------------------------------------+
+|                                                                     |
+|        DVC has enabled anonymous aggregate usage analytics.         |
+|     Read the analytics documentation (and how to opt-out) here:     |
+|             <https://dvc.org/doc/user-guide/analytics>              |
+|                                                                     |
++---------------------------------------------------------------------+
+
+What's next?
+------------
+- Check out the documentation: <https://dvc.org/doc>
+- Get help and share ideas: <https://dvc.org/chat>
+- Star us on GitHub: <https://github.com/treeverse/dvc>
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> uv add pandas
+Resolved 107 packages in 592ms
+░░░░░░░░░░░░░░░░░░░░ [0/3] Installing wheels...                                                                                                    warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 3 packages in 2.34s
+ + numpy==2.4.0
+ + pandas==2.3.3
+ + pytz==2025.2
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> mkdir S3
+
+
+    Directory: D:\Code Playground\ML_Ops\mlops-dvc-lab
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        27-12-2025     16:16                S3
+
+
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc remote add -d myremote S3
+Setting 'myremote' as a default remote.
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc add data/
+Adding...                                                                                                                                          
+ERROR:  output 'data' is already tracked by SCM (e.g. Git).
+    You can remove it from Git, then add to DVC.
+        To stop tracking from Git:
+            git rm -r --cached 'data'
+            git commit -m "stop tracking data"
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git rm -r --cached 'data'
+rm 'data/sample_data.csv'
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git commit -m "stop tracking data"
+[main 44216e8] stop tracking data
+ 4 files changed, 6 insertions(+), 4 deletions(-)
+ create mode 100644 .dvc/.gitignore
+ create mode 100644 .dvc/config
+ create mode 100644 .dvcignore
+ delete mode 100644 data/sample_data.csv
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc add data/
+100% Adding...|██████████████████████████████████████████████████████████████████████████████████████████████████████████|1/1 [00:00,  1.21file/s] 
+
+To track the changes with git, run:
+
+        git add data.dvc .gitignore
+
+To enable auto staging, run:
+
+        dvc config core.autostage true
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git add .
+warning: in the working copy of '.python-version', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'main.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'pyproject.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'uv.lock', LF will be replaced by CRLF the next time Git touches it
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git status     
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   .dvc/config
+        modified:   .gitignore
+        new file:   .python-version
+        new file:   data.dvc
+        new file:   main.py
+        new file:   pyproject.toml
+        new file:   uv.lock
+
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc status
+Data and pipelines are up to date.
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git log --oneline
+44216e8 (HEAD -> main) stop tracking data
+d4d9bd1 (origin/main, origin/HEAD) first commit before DVC
+f0dc83c Initial commit
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git commit -m "DVC initiated with data version1"
+[main 10cab5c] DVC initiated with data version1
+ 7 files changed, 1930 insertions(+)
+ create mode 100644 .python-version
+ create mode 100644 data.dvc
+ create mode 100644 main.py
+ create mode 100644 pyproject.toml
+ create mode 100644 uv.lock
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc commit
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc push
+Collecting                                                                                                              |2.00 [00:00,  237entry/s]
+Pushing
+2 files pushed
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git add . 
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git commit -m "first version of data saved"
+[main 4dfe8c8] first version of data saved
+ 2 files changed, 5 insertions(+)
+ create mode 100644 S3/files/md5/d0/d7d604bde05aa8105c9f99872a2f94.dir
+ create mode 100644 S3/files/md5/f0/04877355d955194d312a877ddd7521
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> py my-code.py
+CSV file saved to data\sample_data.csv
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc status
+data.dvc:
+        changed outs:
+                modified:           data
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc commit
+outputs ['data'] of stage: 'data.dvc' changed. Are you sure you want to commit it? [y/n] y
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc push
+Collecting                                                                                                              |2.00 [00:00, 47.8entry/s]
+Pushing
+2 files pushed
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git status
+On branch main
+Your branch is ahead of 'origin/main' by 3 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   data.dvc
+        modified:   my-code.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        S3/files/md5/04/
+        S3/files/md5/aa/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git add .
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git commit -m "Second version of data saved"
+[main 83a86b9] Second version of data saved
+ 4 files changed, 11 insertions(+), 5 deletions(-)
+ create mode 100644 S3/files/md5/04/d9d4735775c8d157fb9c3164636d2c.dir
+ create mode 100644 S3/files/md5/aa/ecd5ab789d53a8930d840e3507c20c
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git push origin main
+Enumerating objects: 39, done.
+Counting objects: 100% (39/39), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (29/29), done.
+Writing objects: 100% (36/36), 92.72 KiB | 1.72 MiB/s, done.
+Total 36 (delta 6), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (6/6), completed with 2 local objects.
+To https://github.com/FreezinGaits/mlops-dvc-lab.git
+   d4d9bd1..83a86b9  main -> main
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git log --oneline
+83a86b9 (HEAD -> main, origin/main, origin/HEAD) Second version of data saved
+4dfe8c8 first version of data saved
+10cab5c DVC initiated with data version1
+44216e8 stop tracking data
+d4d9bd1 first commit before DVC
+f0dc83c Initial commit
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> py my-code.py
+CSV file saved to data\sample_data.csv
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc status
+data.dvc:
+        changed outs:
+                modified:           data
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc commit
+outputs ['data'] of stage: 'data.dvc' changed. Are you sure you want to commit it? [y/n] y
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc push
+Collecting                                                                                                              |2.00 [00:00, 64.4entry/s]
+Pushing
+2 files pushed
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git add .
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git commit -m "Third version of data saved"
+[main 3802c27] Third version of data saved
+ 4 files changed, 12 insertions(+), 5 deletions(-)
+ create mode 100644 S3/files/md5/03/679a9e1bf290148e9e17cf0b7fe3f7
+ create mode 100644 S3/files/md5/03/77810b244c0b941080f10326f6b995.dir
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git push origin main
+Enumerating objects: 16, done.
+Counting objects: 100% (16/16), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (10/10), 931 bytes | 35.00 KiB/s, done.
+Total 10 (delta 3), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/FreezinGaits/mlops-dvc-lab.git
+   83a86b9..3802c27  main -> main
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git log --oneline
+3802c27 (HEAD -> main, origin/main, origin/HEAD) Third version of data saved
+83a86b9 Second version of data saved
+4dfe8c8 first version of data saved
+10cab5c DVC initiated with data version1
+44216e8 stop tracking data
+d4d9bd1 first commit before DVC
+f0dc83c Initial commit
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git checkout 4dfe8c8
+Note: switching to '4dfe8c8'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at 4dfe8c8 first version of data saved
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc status
+data.dvc:
+        changed outs:
+                modified:           data
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc pull
+Collecting                                                                                                              |2.00 [00:00,  147entry/s]
+Fetching
+Building workspace index                                                                                                |3.00 [00:00,  200entry/s]
+Comparing indexes                                                                                                       |3.00 [00:00,  683entry/s] 
+Applying changes                                                                                                        |1.00 [00:00,  90.9file/s] 
+M       data\
+1 file modified
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc status
+Data and pipelines are up to date.
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git checkout main
+Previous HEAD position was 4dfe8c8 first version of data saved
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc status
+data.dvc:
+        changed outs:
+                modified:           data
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> dvc pull
+Collecting                                                                                                              |2.00 [00:00,  120entry/s]
+Fetching
+Building workspace index                                                                                                |3.00 [00:00,  151entry/s]
+Comparing indexes                                                                                                       |3.00 [00:00,  540entry/s] 
+Applying changes                                                                                                        |1.00 [00:00,  83.5file/s] 
+M       data\
+1 file modified
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git log --oneline
+3802c27 (HEAD -> main, origin/main, origin/HEAD) Third version of data saved
+83a86b9 Second version of data saved
+4dfe8c8 first version of data saved
+10cab5c DVC initiated with data version1
+44216e8 stop tracking data
+d4d9bd1 first commit before DVC
+f0dc83c Initial commit
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+(mlops-dvc-lab) PS D:\Code Playground\ML_Ops\mlops-dvc-lab> 
